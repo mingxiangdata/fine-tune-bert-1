@@ -22,7 +22,7 @@ def train_model(
         nb_tr_examples, nb_tr_steps = 0, 0
 
         # train the model for one epoch
-        for step, batch in enumerate(train_dataloader):
+        for batch in train_dataloader:
             ## move batch to GPU
             batch = tuple(t.to(device) for t in batch)
             ## unpack the inputs from our dataloader
@@ -51,7 +51,7 @@ def train_model(
             nb_tr_examples += b_input_ids.size(0)
             nb_tr_steps += 1
 
-        print("Train loss: {}".format(tr_loss / nb_tr_steps))
+        print(f"Train loss: {tr_loss / nb_tr_steps}")
 
         # Put model in evaluation mode to evaluate loss on the validation set
         model.eval()
@@ -82,6 +82,6 @@ def train_model(
             eval_accuracy += tmp_eval_accuracy
             nb_eval_steps += 1
         model.save_pretrained("./model")
-        print("Validation Accuracy: {}".format(eval_accuracy / nb_eval_steps))
+        print(f"Validation Accuracy: {eval_accuracy / nb_eval_steps}")
 
     return model

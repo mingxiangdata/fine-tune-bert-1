@@ -28,4 +28,4 @@ def eval_model(model, test_dataloader, device):
 
         eval_accuracy += tmp_eval_accuracy
         nb_eval_steps += 1
-    print("Test Accuracy: {}".format(eval_accuracy / nb_eval_steps))
+    print(f"Test Accuracy: {eval_accuracy / nb_eval_steps}")
