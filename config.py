@@ -10,16 +10,26 @@ class BertOptimConfig:
         no_decay = ['bias', 'LayerNorm.weight']
         # Separate the `weight` parameters from the `bias` parameters. 
         # - For the `weight` parameters, this specifies a 'weight_decay_rate' of 0.01. 
-        # - For the `bias` parameters, the 'weight_decay_rate' is 0.0. 
+        # - For the `bias` parameters, the 'weight_decay_rate' is 0.0.
         optimizer_grouped_parameters = [
-            # Filter for all parameters which *don't* include 'bias', 'gamma', 'beta'.
-            {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)],
-            'weight_decay_rate': 0.1},
-            
-            # Filter for parameters which *do* include those.
-            {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
-            'weight_decay_rate': 0.0}
+            {
+                'params': [
+                    p
+                    for n, p in param_optimizer
+                    if all(nd not in n for nd in no_decay)
+                ],
+                'weight_decay_rate': 0.1,
+            },
+            {
+                'params': [
+                    p
+                    for n, p in param_optimizer
+                    if any(nd in n for nd in no_decay)
+                ],
+                'weight_decay_rate': 0.0,
+            },
         ]
+
         # Note - `optimizer_grouped_parameters` only includes the parameter values, not 
         # the names.
 

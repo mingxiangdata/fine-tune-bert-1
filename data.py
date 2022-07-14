@@ -39,17 +39,14 @@ class QuestionsData:
         val_labels = self.dev_df.target.values
         test_texts = self.test_df['doc'].values
         test_labels = self.test_df.target.values
-        
+
         return train_texts, val_texts, test_texts, train_labels, val_labels, test_labels
     
     def preprocess(self, texts):
         """
         Add bert token (CLS and SEP) tokens to each sequence pre-tokenization
         """
-        ## separate labels and texts before preprocessing
-        # Adding CLS and SEP tokens at the beginning and end of each sequence for BERT
-        texts_processed = ["[CLS] " + str(sequence) + " [SEP]" for sequence in texts]
-        return texts_processed
+        return [f"[CLS] {str(sequence)} [SEP]" for sequence in texts]
         
     def tokenize(self, texts):
         """
@@ -58,19 +55,20 @@ class QuestionsData:
         """
         ## tokenize sequence
         tokenized_texts = [self.tokenizer.tokenize(text) for text in tqdm(texts)]
-        
+
         ## convert tokens to ids
         print('convert tokens to ids')
         text_ids = [self.tokenizer.convert_tokens_to_ids(x) for x in tqdm(tokenized_texts)]
 
         ## pad our text tokens for each sequence
         print('pad our text tokens for each sequence')
-        text_ids_post_processed = pad_sequences(text_ids, 
-                                       maxlen=self.max_sequence_length, 
-                                       dtype="long", 
-                                       truncating="post", 
-                                       padding="post") 
-        return text_ids_post_processed
+        return pad_sequences(
+            text_ids,
+            maxlen=self.max_sequence_length,
+            dtype="long",
+            truncating="post",
+            padding="post",
+        )
 
     def create_attention_mask(self, text_ids):
         """
